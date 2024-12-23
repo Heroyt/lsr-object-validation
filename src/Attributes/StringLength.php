@@ -11,7 +11,6 @@ use Lsr\ObjectValidation\Exceptions\ValidationException;
  */
 class StringLength implements Validator
 {
-
     /**
      * @param  positive-int|null  $length
      * @param  positive-int|null  $min
@@ -25,7 +24,7 @@ class StringLength implements Validator
         assert(!isset($length) || (!isset($min) && !isset($max)), 'Cannot combine length argument with min and max.');
     }
 
-    public function validateValue(mixed $value, string | object $class, string $property) : void {
+    public function validateValue(mixed $value, string | object $class, string $property): void {
         if (!is_string($value)) {
             throw ValidationException::createWithValue(
                 $class,
@@ -44,7 +43,7 @@ class StringLength implements Validator
             throw ValidationException::createWithValue(
                 $class,
                 $property,
-                'String length must be exactly '.$this->length.'. (value: %s)',
+                'String length must be exactly ' . $this->length . '. (value: %s)',
                 $value
             );
         }
@@ -53,7 +52,7 @@ class StringLength implements Validator
             throw ValidationException::createWithValue(
                 $class,
                 $property,
-                'String length must be between '.$this->min.' and '.$this->max.'. (value: %s)',
+                'String length must be between ' . $this->min . ' and ' . $this->max . '. (value: %s)',
                 $value
             );
         }
@@ -62,7 +61,7 @@ class StringLength implements Validator
             throw ValidationException::createWithValue(
                 $class,
                 $property,
-                'String length must be at most '.$this->max.'. (value: %s)',
+                'String length must be at most ' . $this->max . '. (value: %s)',
                 $value
             );
         }
@@ -71,7 +70,7 @@ class StringLength implements Validator
             throw ValidationException::createWithValue(
                 $class,
                 $property,
-                'String length must be at least '.$this->min.'. (value: %s)',
+                'String length must be at least ' . $this->min . '. (value: %s)',
                 $value
             );
         }

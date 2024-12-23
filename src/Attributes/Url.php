@@ -9,8 +9,7 @@ use Nette\Utils\Validators;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class Url implements Validator
 {
-
-    public function validateValue(mixed $value, string | object $class, string $property) : void {
+    public function validateValue(mixed $value, string | object $class, string $property): void {
         if (!is_string($value) || !Validators::isUrl($value)) {
             throw ValidationException::createWithValue(
                 $class,

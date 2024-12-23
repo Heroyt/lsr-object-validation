@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Lsr\ObjectValidation;
@@ -12,7 +13,6 @@ use ReflectionClass;
 
 class Validator
 {
-
     /**
      * @param  object  $object
      * @throws ValidationException
@@ -33,8 +33,7 @@ class Validator
                     if ($attribute instanceof Required) {
                         $attribute->throw($object, $propertyName);
                     }
-                }
-                else {
+                } else {
                     $attribute->validateValue($value, $object, $propertyName);
                 }
             }
@@ -58,8 +57,7 @@ class Validator
                         if ($attribute instanceof Required) {
                             $attribute->throw($object, $propertyName);
                         }
-                    }
-                    else {
+                    } else {
                         $attribute->validateValue($value, $object, $propertyName);
                     }
                 } catch (ValidationException $e) {
@@ -72,5 +70,4 @@ class Validator
             throw new ValidationMultiException($exceptions);
         }
     }
-
 }

@@ -2,15 +2,14 @@
 
 namespace Lsr\ObjectValidation\Exceptions;
 
-
 use JsonException;
 use RuntimeException;
 
 class ValidationException extends RuntimeException
 {
     /** @var class-string|null  */
-    private(set) ?string $object = null;
-    private(set) ?string $property = null;
+    public private(set) ?string $object = null;
+    public private(set) ?string $property = null;
 
 
     /**
@@ -25,7 +24,7 @@ class ValidationException extends RuntimeException
         string $property,
         string $message,
         mixed  $value
-    ) : ValidationException {
+    ): ValidationException {
         try {
             $formatted = json_encode($value, JSON_THROW_ON_ERROR);
         } catch (JsonException) {
@@ -37,7 +36,7 @@ class ValidationException extends RuntimeException
         return
             new self(
                 sprintf(
-                    "%s::\$%s - ".$message,
+                    "%s::\$%s - " . $message,
                     $object,
                     $property,
                     $formatted
@@ -57,13 +56,13 @@ class ValidationException extends RuntimeException
         object|string $object,
         string $property,
         string $message
-    ) : ValidationException {
+    ): ValidationException {
         $object = is_string($object) ? $object : get_class($object);
 
         return
             new self(
                 sprintf(
-                    "%s::\$%s - ".$message,
+                    "%s::\$%s - " . $message,
                     $object,
                     $property
                 )
@@ -71,7 +70,7 @@ class ValidationException extends RuntimeException
              ->withProperty($property);
     }
 
-    public function withProperty(string $property) : ValidationException {
+    public function withProperty(string $property): ValidationException {
         $this->property = $property;
         return $this;
     }
@@ -80,9 +79,8 @@ class ValidationException extends RuntimeException
      * @param  class-string  $object
      * @return $this
      */
-    public function withObject(string $object) : ValidationException {
+    public function withObject(string $object): ValidationException {
         $this->object = $object;
         return $this;
     }
-
 }

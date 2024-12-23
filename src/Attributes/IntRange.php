@@ -13,12 +13,13 @@ class IntRange implements Validator
     public function __construct(
         public ?int $min = null,
         public ?int $max = null,
-    ) {}
+    ) {
+    }
 
     /**
      * @inheritDoc
      */
-    public function validateValue(mixed $value, object | string $class, string $property) : void {
+    public function validateValue(mixed $value, object | string $class, string $property): void {
         if (!is_int($value)) {
             throw ValidationException::createWithValue(
                 $class,
@@ -32,7 +33,7 @@ class IntRange implements Validator
             throw ValidationException::createWithValue(
                 $class,
                 $property,
-                'Number must be larger then '.$this->min.'. (value: %s)',
+                'Number must be larger then ' . $this->min . '. (value: %s)',
                 $value
             );
         }
@@ -40,7 +41,7 @@ class IntRange implements Validator
             throw ValidationException::createWithValue(
                 $class,
                 $property,
-                'Number must be lower then '.$this->max.'. (value: %s)',
+                'Number must be lower then ' . $this->max . '. (value: %s)',
                 $value
             );
         }
