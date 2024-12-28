@@ -17,6 +17,7 @@ use Lsr\ObjectValidation\Exceptions\ValidationMultiException;
 use Lsr\ObjectValidation\Validator;
 use Mocks\ValidationClass;
 use Mocks\ValidationClass2;
+use Mocks\ValidationUninitializedClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
@@ -32,6 +33,16 @@ class ValidatorTest extends TestCase
         yield [
             $obj,
             ['required', 'email'],
+            $messages,
+        ];
+
+        $obj = new ValidationUninitializedClass();
+        $messages = [
+            sprintf('%s::$required - Is required.', $obj::class),
+        ];
+        yield [
+            $obj,
+            ['required'],
             $messages,
         ];
 
@@ -297,6 +308,13 @@ class ValidatorTest extends TestCase
             'object.email',
             $message,
         ];
+
+        $obj = new ValidationUninitializedClass();
+        yield [
+            $obj,
+            'required',
+            sprintf('%s::$required - Is required.', $obj::class),
+        ];
     }
 
     public static function getTestValuesValid(): Generator {
@@ -385,7 +403,7 @@ class ValidatorTest extends TestCase
 
     #[DataProvider('getTestValuesAll')]
     public function testValidateAll(
-        ValidationClass $object,
+        ValidationClass|ValidationUninitializedClass $object,
         array           $invalidProperties,
         array           $exceptionMessages
     ): void {
@@ -431,7 +449,7 @@ class ValidatorTest extends TestCase
     }
 
     #[DataProvider('getTestValues')]
-    public function testValidate(ValidationClass $object, string $invalidProperty, string $exceptionMessage): void {
+    public function testValidate(ValidationClass|ValidationUninitializedClass $object, string $invalidProperty, string $exceptionMessage): void {
         $validator = new Validator();
 
         try {
