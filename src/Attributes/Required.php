@@ -8,9 +8,15 @@ use Lsr\ObjectValidation\Exceptions\ValidationException;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class Required implements Validator
 {
-    public function validateValue(mixed $value, string | object $class, string $property): void {
+    public function validateValue
+    (
+        mixed           $value,
+        string | object $class,
+        string          $property,
+        string          $propertyPrefix = ''
+    ) : void {
         if (is_null($value)) {
-            $this->throw($class, $property);
+            $this->throw($class, $propertyPrefix.$property);
         }
     }
 

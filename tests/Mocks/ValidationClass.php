@@ -47,6 +47,9 @@ class ValidationClass
     #[StringLength(min: 5, max: 10)]
     public string $strMinMax;
 
+    #[StringLength(min: 5, max: 10)]
+    public ?string $nullableStrMinMax = null;
+
     #[StringLength]
     public int|string $strInvalid;
 
@@ -55,6 +58,8 @@ class ValidationClass
 
     #[Url]
     public string $url;
+
+    public ?ValidationClass2 $object = null;
 
     public function setEmail(string $email): string {
         $this->email = $email;
@@ -150,6 +155,15 @@ class ValidationClass
             '%s::$strMinMax - String length must be between 5 and 10. (value: %s)',
             $this::class,
             json_encode($strMinMax),
+        );
+    }
+
+    public function setNullableStrMinMax(string $nullableStrMinMax): string {
+        $this->nullableStrMinMax = $nullableStrMinMax;
+        return sprintf(
+            '%s::$nullableStrMinMax - String length must be between 5 and 10. (value: %s)',
+            $this::class,
+            json_encode($nullableStrMinMax),
         );
     }
     public function setStrInvalid(int $strInvalid): string {

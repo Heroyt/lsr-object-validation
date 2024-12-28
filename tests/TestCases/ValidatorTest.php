@@ -16,6 +16,7 @@ use Lsr\ObjectValidation\Exceptions\ValidationException;
 use Lsr\ObjectValidation\Exceptions\ValidationMultiException;
 use Lsr\ObjectValidation\Validator;
 use Mocks\ValidationClass;
+use Mocks\ValidationClass2;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
@@ -108,10 +109,11 @@ class ValidatorTest extends TestCase
         $messages[] = $obj->setStrMin('mkada');
         $messages[] = $obj->setStrMax('ajksdbakjfhbaksjfhbaksfjnaskfjans');
         $messages[] = $obj->setStrMinMax('');
+        $messages[] = $obj->setNullableStrMinMax('');
         $messages[] = $obj->setStrInvalid(123);
         yield [
             $obj,
-            ['required', 'strLen', 'strMin', 'strMax', 'strMinMax', 'strInvalid'],
+            ['required', 'strLen', 'strMin', 'strMax', 'strMinMax', 'nullableStrMinMax', 'strInvalid'],
             $messages,
         ];
 
@@ -175,10 +177,24 @@ class ValidatorTest extends TestCase
         $messages = [
             sprintf('%s::$required - Is required.', $obj::class),
         ];
-        $messages[] = $obj->setUri('urn:isbn:0451450523');
+        $obj->setUri('urn:isbn:0451450523'); // Valid value
         yield [
             $obj,
             ['required'],
+            $messages,
+        ];
+
+        $obj = new ValidationClass();
+        $obj->required = null;
+        $messages = [
+            sprintf('%s::$required - Is required.', $obj::class),
+        ];
+        $obj2 = new ValidationClass2();
+        $obj->object = $obj2;
+        $messages[] = $obj2->setEmail('');
+        yield [
+            $obj,
+            ['required', 'object.email'],
             $messages,
         ];
     }
@@ -270,6 +286,17 @@ class ValidatorTest extends TestCase
             'uri',
             $message,
         ];
+
+        $obj = new ValidationClass();
+        $obj->required = 'some value';
+        $obj2 = new ValidationClass2();
+        $message = $obj2->setEmail('');
+        $obj->object = $obj2;
+        yield [
+            $obj,
+            'object.email',
+            $message,
+        ];
     }
 
     public static function getTestValuesValid(): Generator {
@@ -326,6 +353,12 @@ class ValidatorTest extends TestCase
         $obj->strMinMax = 'askdjaskdj';
         yield [$obj];
 
+        $obj->nullableStrMinMax = 'askdjaskdj';
+        yield [$obj];
+
+        $obj->nullableStrMinMax = null;
+        yield [$obj];
+
         $obj->strMinMax = 'askdj';
         yield [$obj];
 
@@ -342,6 +375,11 @@ class ValidatorTest extends TestCase
         yield [$obj];
 
         $obj->url = 'http://localhost:8080';
+        yield [$obj];
+
+        $obj2 = new ValidationClass2();
+        $obj2->email = 'email@email.com';
+        $obj->object = $obj2;
         yield [$obj];
     }
 
@@ -367,8 +405,27 @@ class ValidatorTest extends TestCase
                 )
             );
             foreach ($e->exceptions as $key => $exception) {
-                $this->assertEquals($invalidProperties[$key], $exception->property);
-                $this->assertEquals($exceptionMessages[$key], $exception->getMessage());
+                if ($exception instanceof ValidationMultiException) {
+                    foreach ($exception->exceptions as $exception1) {
+                        $this->assertEquals(
+                            $invalidProperties[$key],
+                            $exception1->property,
+                        );
+                        $this->assertEquals(
+                            $exceptionMessages[$key],
+                            $exception1->getMessage()
+                        );
+                    }
+                    continue;
+                }
+                $this->assertEquals(
+                    $invalidProperties[$key],
+                    $exception->property,
+                );
+                $this->assertEquals(
+                    $exceptionMessages[$key],
+                    $exception->getMessage()
+                );
             }
         }
     }

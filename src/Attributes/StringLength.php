@@ -24,11 +24,16 @@ class StringLength implements Validator
         assert(!isset($length) || (!isset($min) && !isset($max)), 'Cannot combine length argument with min and max.');
     }
 
-    public function validateValue(mixed $value, string | object $class, string $property): void {
+    public function validateValue(
+        mixed           $value,
+        string | object $class,
+        string          $property,
+        string          $propertyPrefix = ''
+    ) : void {
         if (!is_string($value)) {
             throw ValidationException::createWithValue(
                 $class,
-                $property,
+                $propertyPrefix.$property,
                 'Must be a string. (value: %s)',
                 $value
             );
@@ -42,8 +47,8 @@ class StringLength implements Validator
         if (isset($this->length) && $len !== $this->length) {
             throw ValidationException::createWithValue(
                 $class,
-                $property,
-                'String length must be exactly ' . $this->length . '. (value: %s)',
+                $propertyPrefix.$property,
+                'String length must be exactly '.$this->length.'. (value: %s)',
                 $value
             );
         }
@@ -51,8 +56,8 @@ class StringLength implements Validator
         if (isset($this->min, $this->max) && ($len < $this->min || $len > $this->max)) {
             throw ValidationException::createWithValue(
                 $class,
-                $property,
-                'String length must be between ' . $this->min . ' and ' . $this->max . '. (value: %s)',
+                $propertyPrefix.$property,
+                'String length must be between '.$this->min.' and '.$this->max.'. (value: %s)',
                 $value
             );
         }
@@ -60,8 +65,8 @@ class StringLength implements Validator
         if (!isset($this->min) && isset($this->max) && $len > $this->max) {
             throw ValidationException::createWithValue(
                 $class,
-                $property,
-                'String length must be at most ' . $this->max . '. (value: %s)',
+                $propertyPrefix.$property,
+                'String length must be at most '.$this->max.'. (value: %s)',
                 $value
             );
         }
@@ -69,8 +74,8 @@ class StringLength implements Validator
         if (isset($this->min) && $len < $this->min) {
             throw ValidationException::createWithValue(
                 $class,
-                $property,
-                'String length must be at least ' . $this->min . '. (value: %s)',
+                $propertyPrefix.$property,
+                'String length must be at least '.$this->min.'. (value: %s)',
                 $value
             );
         }
