@@ -1,7 +1,7 @@
 {
   "name": "lsr/object-validation",
   "description": "Laser framework core - Object validation",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "repositories": [
     {
       "type": "composer",

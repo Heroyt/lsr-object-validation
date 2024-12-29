@@ -24,7 +24,7 @@ class Validator
         foreach ($properties as $property) {
             $propertyName = $property->getName();
             $type = $property->getType();
-            $value = $property->isInitialized($object) ? $object->$propertyName : null;
+            $value = $property->isInitialized($object) ? $property->getValue($object) : null;
 
             $attributes = $property->getAttributes(ValidatorAttribute::class, ReflectionAttribute::IS_INSTANCEOF);
             foreach ($attributes as $attributeReflection) {
@@ -54,7 +54,7 @@ class Validator
         foreach ($properties as $property) {
             $propertyName = $property->getName();
             $type = $property->getType();
-            $value = $property->isInitialized($object) ? $object->$propertyName : null;
+            $value = $property->isInitialized($object) ? $property->getValue($object) : null;
 
             $attributes = $property->getAttributes(ValidatorAttribute::class, ReflectionAttribute::IS_INSTANCEOF);
             foreach ($attributes as $attributeReflection) {
