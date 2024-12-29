@@ -15,6 +15,9 @@ use Lsr\ObjectValidation\Attributes\Url;
 use Lsr\ObjectValidation\Exceptions\ValidationException;
 use Lsr\ObjectValidation\Exceptions\ValidationMultiException;
 use Lsr\ObjectValidation\Validator;
+use Mocks\NoValidateClass;
+use Mocks\NoValidateClass1;
+use Mocks\NoValidateClass2;
 use Mocks\ValidationClass;
 use Mocks\ValidationClass2;
 use Mocks\ValidationRecursive1;
@@ -471,7 +474,7 @@ class ValidatorTest extends TestCase
     }
 
     #[DoesNotPerformAssertions]
-    public function validateInfiniteRecursion() : void {
+    public function testInfiniteRecursion() : void {
         $validator = new Validator();
 
         $obj1 = new ValidationRecursive1();
@@ -487,5 +490,27 @@ class ValidatorTest extends TestCase
         $validator->validate($obj2);
         $validator->validateAll($obj1);
         $validator->validateAll($obj2);
+    }
+
+    #[DoesNotPerformAssertions]
+    public function testNoValidate() : void {
+        $validator = new Validator();
+
+        $obj = new NoValidateClass();
+        $validator->validate($obj);
+        $validator->validateAll($obj);
+
+        $obj = new NoValidateClass1();
+        $obj->age = 10;
+        $validator->validate($obj);
+        $validator->validateAll($obj);
+
+        $obj = new NoValidateClass2();
+        $obj->property = 'test';
+        $validator->validate($obj);
+        $validator->validateAll($obj);
+        $obj->object = new NoValidateClass();
+        $validator->validate($obj);
+        $validator->validateAll($obj);
     }
 }
