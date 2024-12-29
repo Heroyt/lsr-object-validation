@@ -17,6 +17,8 @@ use Lsr\ObjectValidation\Exceptions\ValidationMultiException;
 use Lsr\ObjectValidation\Validator;
 use Mocks\ValidationClass;
 use Mocks\ValidationClass2;
+use Mocks\ValidationRecursive1;
+use Mocks\ValidationRecursive2;
 use Mocks\ValidationUninitializedClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
@@ -466,5 +468,24 @@ class ValidatorTest extends TestCase
 
         $validator->validate($object);
         $validator->validateAll($object);
+    }
+
+    #[DoesNotPerformAssertions]
+    public function validateInfiniteRecursion() : void {
+        $validator = new Validator();
+
+        $obj1 = new ValidationRecursive1();
+        $obj1->name = 'akjdnaskjdn';
+
+        $obj2 = new ValidationRecursive2();
+        $obj1->object = $obj2;
+        $obj2->validation = $obj1;
+        $obj2->name = 'aksjdnajkdnk';
+        $obj2->age = 50;
+
+        $validator->validate($obj1);
+        $validator->validate($obj2);
+        $validator->validateAll($obj1);
+        $validator->validateAll($obj2);
     }
 }
