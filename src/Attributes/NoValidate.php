@@ -6,7 +6,7 @@ namespace Lsr\ObjectValidation\Attributes;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE | Attribute::TARGET_CLASS)]
-class NoValidate extends Attribute
+class NoValidate
 {
 
 }
