@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mocks;
 
+use Lsr\ObjectValidation\Attributes\DateString;
 use Lsr\ObjectValidation\Attributes\Email;
 use Lsr\ObjectValidation\Attributes\IntRange;
 use Lsr\ObjectValidation\Attributes\Numeric;
@@ -58,6 +59,12 @@ class ValidationClass
 
     #[Url]
     public string $url;
+
+    #[DateString]
+    public string $dateString;
+
+    #[DateString(format: 'Y-m-d')]
+    public string $dateStringFormat;
 
     public ?ValidationClass2 $object = null;
 
@@ -190,6 +197,24 @@ class ValidationClass
             '%s::$url - Must be a valid URL. (value: %s)',
             $this::class,
             json_encode($url),
+        );
+    }
+
+    public function setDateString(string $dateString) : string {
+        $this->dateString = $dateString;
+        return sprintf(
+            '%s::$dateString - Must be a valid date string. (value: %s)',
+            $this::class,
+            json_encode($dateString),
+        );
+    }
+
+    public function setDateStringFormat(string $dateStringFormat) : string {
+        $this->dateStringFormat = $dateStringFormat;
+        return sprintf(
+            '%s::$dateStringFormat - Must be a valid date string. (value: %s)',
+            $this::class,
+            json_encode($dateStringFormat),
         );
     }
 }

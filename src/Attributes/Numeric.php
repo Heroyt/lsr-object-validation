@@ -6,8 +6,12 @@ use Attribute;
 use Lsr\ObjectValidation\Exceptions\ValidationException;
 
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-class Numeric implements Validator
+readonly class Numeric implements Validator
 {
+    public function __construct(
+        protected ?string $message = null,
+    ) {}
+
     public function validateValue(
         mixed           $value,
         string | object $class,
@@ -15,7 +19,14 @@ class Numeric implements Validator
         string          $propertyPrefix = ''
     ) : void {
         if (empty($value) || !is_numeric($value)) {
-            throw ValidationException::createWithValue(
+            throw $this->message !== null ?
+                ValidationException::createWithCustomMessage(
+                    $class,
+                    $property,
+                    $this->message,
+                    $value
+                )
+                : ValidationException::createWithValue(
                 $class,
                 $propertyPrefix.$property,
                 'Must be numeric (string, int or float). (value: %s)',

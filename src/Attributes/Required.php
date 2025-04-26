@@ -6,8 +6,13 @@ use Attribute;
 use Lsr\ObjectValidation\Exceptions\ValidationException;
 
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-class Required implements Validator
+readonly class Required implements Validator
 {
+
+    public function __construct(
+        protected ?string $message = null,
+    ) {}
+
     public function validateValue
     (
         mixed           $value,
@@ -15,7 +20,7 @@ class Required implements Validator
         string          $property,
         string          $propertyPrefix = ''
     ) : void {
-        if (is_null($value)) {
+        if (!isset($value)) {
             $this->throw($class, $propertyPrefix.$property);
         }
     }
@@ -26,10 +31,16 @@ class Required implements Validator
      * @return mixed
      */
     public function throw(object | string $class, string $property) {
-        throw ValidationException::create(
-            $class,
-            $property,
-            'Is required.'
-        );
+        throw $this->message !== null ?
+            ValidationException::createWithCustomMessage(
+                $class,
+                $property,
+                $this->message
+            )
+            : ValidationException::create(
+                $class,
+                $property,
+                'Is required.'
+            );
     }
 }

@@ -5,13 +5,6 @@ declare(strict_types=1);
 namespace TestCases;
 
 use Generator;
-use Lsr\ObjectValidation\Attributes\Email;
-use Lsr\ObjectValidation\Attributes\IntRange;
-use Lsr\ObjectValidation\Attributes\Numeric;
-use Lsr\ObjectValidation\Attributes\Required;
-use Lsr\ObjectValidation\Attributes\StringLength;
-use Lsr\ObjectValidation\Attributes\Uri;
-use Lsr\ObjectValidation\Attributes\Url;
 use Lsr\ObjectValidation\Exceptions\ValidationException;
 use Lsr\ObjectValidation\Exceptions\ValidationMultiException;
 use Lsr\ObjectValidation\Validator;
@@ -305,6 +298,33 @@ class ValidatorTest extends TestCase
 
         $obj = new ValidationClass();
         $obj->required = 'some value';
+        $message = $obj->setDateString('invalid date');
+        yield [
+            $obj,
+            'dateString',
+            $message,
+        ];
+
+        $obj = new ValidationClass();
+        $obj->required = 'some value';
+        $message = $obj->setDateStringFormat('invalid date');
+        yield [
+            $obj,
+            'dateStringFormat',
+            $message,
+        ];
+
+        $obj = new ValidationClass();
+        $obj->required = 'some value';
+        $message = $obj->setDateStringFormat('30.4.2022');
+        yield [
+            $obj,
+            'dateStringFormat',
+            $message,
+        ];
+
+        $obj = new ValidationClass();
+        $obj->required = 'some value';
         $obj2 = new ValidationClass2();
         $message = $obj2->setEmail('');
         $obj->object = $obj2;
@@ -398,6 +418,18 @@ class ValidatorTest extends TestCase
         yield [$obj];
 
         $obj->url = 'http://localhost:8080';
+        yield [$obj];
+
+        $obj->dateString = '30.4.2022';
+        yield [$obj];
+
+        $obj->dateString = '2022-04-30';
+        yield [$obj];
+
+        $obj->dateString = '2022-04-30 00:20:50';
+        yield [$obj];
+
+        $obj->dateStringFormat = '2022-04-30';
         yield [$obj];
 
         $obj2 = new ValidationClass2();
