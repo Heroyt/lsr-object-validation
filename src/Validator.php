@@ -151,8 +151,8 @@ class Validator
                     }
                 }
 
-                if (is_object($value)) {
-                    // Recursive validation
+                if (is_object($value) && !$property->isVirtual() && !$property->hasHooks()) {
+                    // Recursive validation for non-virtual properties
                     try {
                         $this->validateAll($value, $propertyPrefix.$propertyName.'.');
                     } catch (ValidationException $e) {
