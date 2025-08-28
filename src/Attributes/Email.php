@@ -12,6 +12,7 @@ readonly class Email implements Validator
 
     public function __construct(
         protected ?string $message = null,
+        protected bool $allowEmpty = false,
     ) {}
 
     public function validateValue(
@@ -20,6 +21,9 @@ readonly class Email implements Validator
         string          $property,
         string          $propertyPrefix = ''
     ) : void {
+        if ($this->allowEmpty && empty($value)) {
+            return;
+        }
         if (!is_string($value) || !Validators::isEmail($value)) {
             throw $this->message !== null ?
                 ValidationException::createWithCustomMessage(
@@ -29,11 +33,11 @@ readonly class Email implements Validator
                     $value
                 )
                 : ValidationException::createWithValue(
-                $class,
-                $propertyPrefix.$property,
-                'Must be a valid email. (value: %s)',
-                $value
-            );
+                    $class,
+                    $propertyPrefix.$property,
+                    'Must be a valid email. (value: %s)',
+                    $value
+                );
         }
     }
 }
